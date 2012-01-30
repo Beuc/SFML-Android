@@ -1,0 +1,4 @@
+*~
+*.o
+lib/
+samples/bin/*
