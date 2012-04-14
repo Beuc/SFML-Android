@@ -22,24 +22,48 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_PLATFORM_HPP
-#define SFML_PLATFORM_HPP
+#ifndef SFML_VIDEOMODESUPPORTEGL_HPP
+#define SFML_VIDEOMODESUPPORTEGL_HPP
 
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Config.hpp>
+#include <SFML/Window/VideoMode.hpp>
+#include <vector>
 
 
-#if defined(SFML_SYSTEM_WINDOWS)
+namespace sf
+{
+namespace priv
+{
+////////////////////////////////////////////////////////////
+/// EGL implementation of VideoModeSupport 
+/// Give access to video mode related OS-specific functions
+////////////////////////////////////////////////////////////
+class VideoModeSupport
+{
+public :
 
-    #include <SFML/System/Win32/Platform.hpp>
+    ////////////////////////////////////////////////////////////
+    /// Get supported video modes
+    ///
+    /// \param Modes : Array to fill with available video modes
+    ///
+    ////////////////////////////////////////////////////////////
+    static void GetSupportedVideoModes(std::vector<VideoMode>& Modes);
 
-#elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_MACOS) || defined(SFML_SYSTEM_FREEBSD) || defined(SFML_SYSTEM_ANDROID)
+    ////////////////////////////////////////////////////////////
+    /// Get current desktop video mode
+    ///
+    /// \return Current desktop video mode
+    ///
+    ////////////////////////////////////////////////////////////
+    static VideoMode GetDesktopVideoMode();
+};
 
-    #include <SFML/System/Unix/Platform.hpp>
+} // namespace priv
 
-#endif
+} // namespace sf
 
 
-#endif // SFML_PLATFORM_HPP
+#endif // SFML_VIDEOMODESUPPORTEGL_HPP

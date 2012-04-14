@@ -262,26 +262,26 @@ Packet& Packet::operator >>(wchar_t* Data)
 
     return *this;
 }
-Packet& Packet::operator >>(std::wstring& Data)
-{
-    // First extract string length
-    Uint32 Length;
-    *this >> Length;
+// Packet& Packet::operator >>(std::wstring& Data)
+// {
+//     // First extract string length
+//     Uint32 Length;
+//     *this >> Length;
 
-    Data.clear();
-    if ((Length > 0) && CheckSize(Length * sizeof(Int32)))
-    {
-        // Then extract characters
-        for (Uint32 i = 0; i < Length; ++i)
-        {
-            Uint32 c;
-            *this >> c;
-            Data += static_cast<wchar_t>(c);
-        }
-    }
+//     Data.clear();
+//     if ((Length > 0) && CheckSize(Length * sizeof(Int32)))
+//     {
+//         // Then extract characters
+//         for (Uint32 i = 0; i < Length; ++i)
+//         {
+//             Uint32 c;
+//             *this >> c;
+//             Data += static_cast<wchar_t>(c);
+//         }
+//     }
 
-    return *this;
-}
+//     return *this;
+// }
 
 
 ////////////////////////////////////////////////////////////
@@ -377,21 +377,21 @@ Packet& Packet::operator <<(const wchar_t* Data)
 
     return *this;
 }
-Packet& Packet::operator <<(const std::wstring& Data)
-{
-    // First insert string length
-    Uint32 Length = static_cast<Uint32>(Data.size());
-    *this << Length;
+// Packet& Packet::operator <<(const std::wstring& Data)
+// {
+//     // First insert string length
+//     Uint32 Length = static_cast<Uint32>(Data.size());
+//     *this << Length;
 
-    // Then insert characters
-    if (Length > 0)
-    {
-        for (std::wstring::const_iterator c = Data.begin(); c != Data.end(); ++c)
-            *this << static_cast<Int32>(*c);
-    }
+//     // Then insert characters
+//     if (Length > 0)
+//     {
+//         for (std::wstring::const_iterator c = Data.begin(); c != Data.end(); ++c)
+//             *this << static_cast<Int32>(*c);
+//     }
 
-    return *this;
-}
+//     return *this;
+// }
 
 
 ////////////////////////////////////////////////////////////

@@ -1,5 +1,6 @@
 SRC     = $(wildcard *.cpp)
-SRCGLEW = $(wildcard ./GLEW/*.c)
+# Disabled for Android/GLES2:
+#SRCGLEW = $(wildcard ./GLEW/*.c)
 SRCJPEG = $(wildcard ./libjpeg/*.c)
 SRCPNG  = $(wildcard ./libpng/*.c)
 SRCSOIL = $(wildcard ./SOIL/*.c)
@@ -27,7 +28,7 @@ libsfml-graphics-s.a: $(OBJ) $(OBJGLEW) $(OBJJPEG) $(OBJPNG) $(OBJSOIL) $(OBJZLI
 	$(AR) $(ARFLAGS) $(LIBNAME) $(OBJ) $(OBJGLEW) $(OBJJPEG) $(OBJPNG) $(OBJSOIL) $(OBJZLIB)
 
 libsfml-graphics.so: $(OBJ) $(OBJGLEW) $(OBJJPEG) $(OBJPNG) $(OBJSOIL) $(OBJZLIB)
-	$(CPP) $(LDFLAGS) -Wl,-soname,$(LIB).$(VERSION) -o $(LIBNAME) $(OBJ) $(OBJGLEW) $(OBJJPEG) $(OBJPNG) $(OBJSOIL) $(OBJZLIB) -lfreetype -lX11 -lGL
+	$(CPP) $(LDFLAGS) -Wl,-soname,$(LIB).$(VERSION) -o $(LIBNAME) $(OBJ) $(OBJGLEW) $(OBJJPEG) $(OBJPNG) $(OBJSOIL) $(OBJZLIB) -lfreetype -lGLESv1_CM
 
 $(OBJ): %.o: %.cpp
 	$(CPP) -o $@ -c $< $(CFLAGS) -I/usr/include/freetype2

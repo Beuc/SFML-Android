@@ -112,7 +112,9 @@ void Thread::Terminate()
 {
     if (myIsActive)
     {
-        pthread_cancel(myThread);
+#ifndef __ANDROID__
+	pthread_cancel(myThread);
+#endif
         myIsActive = false;
     }
 }
@@ -137,7 +139,9 @@ void* Thread::ThreadFunc(void* UserData)
     Thread* ThreadToRun = reinterpret_cast<Thread*>(UserData);
 
     // Tell the thread to handle cancel requests immediatly
+#ifndef __ANDROID__
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+#endif
 
     // Forward to the instance
     ThreadToRun->Run();

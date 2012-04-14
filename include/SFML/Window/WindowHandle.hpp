@@ -29,7 +29,9 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Config.hpp>
-
+#if defined(SFML_SYSTEM_ANDROID)
+#include <EGL/egl.h>
+#endif
 
 namespace sf
 {
@@ -41,6 +43,10 @@ namespace sf
 
     // Windows defines a void* handle (HWND)
     typedef void* WindowHandle;
+
+#elif defined(SFML_SYSTEM_ANDROID)
+
+    typedef EGLNativeWindowType WindowHandle;
 
 #elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD)
 

@@ -82,7 +82,7 @@ public :
         Text(const Uint16*               Str);
         Text(const Uint32*               Str);
         Text(const std::string&          Str);
-        Text(const std::wstring&         Str);
+        // Text(const std::wstring&         Str);
         Text(const Unicode::UTF8String&  Str);
         Text(const Unicode::UTF16String& Str);
         Text(const Unicode::UTF32String& Str);
@@ -94,7 +94,7 @@ public :
         ///
         ////////////////////////////////////////////////////////////
         operator       std::string          () const;
-        operator       std::wstring         () const;
+        // operator       std::wstring         () const;
         operator       Unicode::UTF8String  () const;
         operator       Unicode::UTF16String () const;
         operator const Unicode::UTF32String&() const;

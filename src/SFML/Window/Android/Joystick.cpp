@@ -25,33 +25,7 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Graphics/GraphicsContext.hpp>
-#include <SFML/Window/Context.hpp>
-
-
-namespace
-{
-    ////////////////////////////////////////////////////////////
-    // One time initialization of 3rd party libraries.
-    // We use a global function with a static boolean rather
-    // than directly a global boolean, to avoid the randomness
-    // of global variables initializations across compile units.
-    ////////////////////////////////////////////////////////////
-    void InitGraphicsLibs()
-    {
-        static bool InitDone = false;
-        if (!InitDone)
-        {
-            // Initialize GLEW
-#ifndef SFML_SYSTEM_ANDROID
-            glewInit();
-#endif
-
-            InitDone = true;
-        }
-    }
-
-}
+#include <SFML/Window/Joystick.hpp>
 
 
 namespace sf
@@ -59,36 +33,44 @@ namespace sf
 namespace priv
 {
 ////////////////////////////////////////////////////////////
-/// Default constructor, activate the global context
-/// if no other context is bound to the current thread
+/// Initialize the instance and bind it to a physical joystick
 ////////////////////////////////////////////////////////////
-GraphicsContext::GraphicsContext()
+void Joystick::Initialize(unsigned int Index)
 {
-    // Activate the global context
-    if (!Context::IsContextActive())
-    {
-        Context::GetGlobal().SetActive(true);
-        myActivated = true;
-    }
-    else
-    {
-        myActivated = false;
-    }
-
-    // Make sure third party libraries are initialized
-    InitGraphicsLibs();
+    // Reset the joystick state
+    
+    // Initialize the Index-th available joystick
 }
 
 
 ////////////////////////////////////////////////////////////
-/// Destructor, deactivate the global context
-/// if no other context was previously bound to the current thread
+/// Update the current joystick and return its new state
 ////////////////////////////////////////////////////////////
-GraphicsContext::~GraphicsContext()
+JoystickState Joystick::UpdateState()
 {
-    // Deactivate the global context
-    if (myActivated)
-        Context::GetGlobal().SetActive(false);
+    // Fill a JoystickState instance with the current joystick state
+    JoystickState ret;
+    return ret;
+}
+
+
+////////////////////////////////////////////////////////////
+/// Get the number of axes supported by the joystick
+////////////////////////////////////////////////////////////
+bool Joystick::HasAxis(Joy::Axis Axis) const
+{
+    // Return number of supported axes
+    return false;
+}
+
+
+////////////////////////////////////////////////////////////
+/// Get the number of buttons supported by the joystick
+////////////////////////////////////////////////////////////
+unsigned int Joystick::GetButtonsCount() const
+{
+    // Return number of supported buttons
+    return 0;
 }
 
 } // namespace priv

@@ -17,7 +17,7 @@ endif
 
 export CC         = gcc
 export CPP        = g++
-export CFLAGS     = -W -Wall -pedantic -I../../../include -I../../ $(DEBUGFLAGS) $(BUILDFLAGS)
+export CFLAGS     = -W -Wall -pedantic -I../../../include -I../../ $(DEBUGFLAGS) $(BUILDFLAGS) $(EXTRA_CFLAGS)
 export CFLAGSEXT  = -I../../../include -I../.. $(DEBUGFLAGS) $(BUILDFLAGS)
 export LDFLAGS    = $(LINKFLAGS)
 export LIBPATH    = ../../../lib
@@ -31,7 +31,8 @@ export DESTDIR    = /usr/local
 export DESTLIBDIR = $(DESTDIR)/lib
 export DESTINCDIR = $(DESTDIR)/include
 
-all: sfml-system sfml-window sfml-network sfml-graphics sfml-audio
+#all: sfml-system sfml-window sfml-network sfml-graphics sfml-audio
+all: sfml-system sfml-window sfml-network sfml-graphics sfml-main
 
 sfml-system:
 	@(mkdir -p ../../lib)
@@ -53,15 +54,19 @@ sfml-audio:
 	@(mkdir -p ../../lib)
 	@(cd ./Audio && $(MAKE))
 
+sfml-main:
+	@(mkdir -p ../../lib)
+	@(cd ./Main && $(MAKE))
+
 .PHONY: clean mrproper
 
 clean:
-	@(cd ./System && $(MAKE) $@	&& cd ../Window && $(MAKE) $@ && cd ../Network && $(MAKE) $@ && cd ../Graphics && $(MAKE) $@ && cd ../Audio && $(MAKE) $@)
+	@(cd ./System && $(MAKE) $@	&& cd ../Window && $(MAKE) $@ && cd ../Network && $(MAKE) $@ && cd ../Graphics && $(MAKE) $@ && cd ../Audio && $(MAKE) $@ && cd ../Main && $(MAKE) $@)
 
 mrproper: clean
-	@(cd ./System && $(MAKE) $@	&& cd ../Window && $(MAKE) $@ && cd ../Network && $(MAKE) $@ && cd ../Graphics && $(MAKE) $@ && cd ../Audio && $(MAKE) $@)
+	@(cd ./System && $(MAKE) $@	&& cd ../Window && $(MAKE) $@ && cd ../Network && $(MAKE) $@ && cd ../Graphics && $(MAKE) $@ && cd ../Audio && $(MAKE) $@ && cd ../Audio && $(MAKE) $@)
 
 install:
 	@(mkdir -p $(DESTLIBDIR))
 	@(mkdir -p $(DESTINCDIR))
-	@(cd ./System && $(MAKE) $@	&& cd ../Window && $(MAKE) $@ && cd ../Network && $(MAKE) $@ && cd ../Graphics && $(MAKE) $@ && cd ../Audio && $(MAKE) $@ && $(CP) -r ../../../include/SFML/ $(DESTINCDIR)/)
+	@(cd ./System && $(MAKE) $@	&& cd ../Window && $(MAKE) $@ && cd ../Network && $(MAKE) $@ && cd ../Graphics && $(MAKE) $@ && cd ../Main && $(MAKE) $@ && $(CP) -r ../../../include/SFML/ $(DESTINCDIR)/)

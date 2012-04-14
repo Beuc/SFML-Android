@@ -201,12 +201,29 @@ void Sprite::Render(RenderTarget&) const
                        myIsFlippedY ? TexCoords.Top    : TexCoords.Bottom);
 
         // Draw the sprite's triangles
-        glBegin(GL_QUADS);
-            glTexCoord2f(Rect.Left,  Rect.Top);    glVertex2f(0,     0);
-            glTexCoord2f(Rect.Left,  Rect.Bottom); glVertex2f(0,     Height);
-            glTexCoord2f(Rect.Right, Rect.Bottom); glVertex2f(Width, Height);
-            glTexCoord2f(Rect.Right, Rect.Top);    glVertex2f(Width, 0) ;
-        glEnd();
+        // glBegin(GL_QUADS);
+        //     glTexCoord2f(Rect.Left,  Rect.Top);    glVertex2f(0,     0);
+        //     glTexCoord2f(Rect.Left,  Rect.Bottom); glVertex2f(0,     Height);
+        //     glTexCoord2f(Rect.Right, Rect.Bottom); glVertex2f(Width, Height);
+        //     glTexCoord2f(Rect.Right, Rect.Top);    glVertex2f(Width, 0) ;
+        // glEnd();
+
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glEnableClientState(GL_VERTEX_ARRAY);
+	GLfloat tex_coords[6*2];
+	GLfloat ver_coords[6*2];
+	int i = 0, j = 0;
+        tex_coords[i++] = Rect.Left;  tex_coords[i++] = Rect.Top;     ver_coords[j++] = 0;     ver_coords[j++] = 0;
+        tex_coords[i++] = Rect.Left;  tex_coords[i++] = Rect.Bottom;  ver_coords[j++] = 0;     ver_coords[j++] = Height;
+	tex_coords[i++] = Rect.Right; tex_coords[i++] = Rect.Bottom;  ver_coords[j++] = Width; ver_coords[j++] = Height;
+        tex_coords[i++] = Rect.Left;  tex_coords[i++] = Rect.Top;     ver_coords[j++] = 0;     ver_coords[j++] = 0;
+	tex_coords[i++] = Rect.Right; tex_coords[i++] = Rect.Bottom;  ver_coords[j++] = Width; ver_coords[j++] = Height;
+	tex_coords[i++] = Rect.Right; tex_coords[i++] = Rect.Top;     ver_coords[j++] = Width; ver_coords[j++] = 0;
+        glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
+        glVertexPointer(2, GL_FLOAT, 0, ver_coords);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
     }
     else
     {
@@ -214,12 +231,25 @@ void Sprite::Render(RenderTarget&) const
         GLCheck(glDisable(GL_TEXTURE_2D));
 
         // Draw the sprite's triangles
-        glBegin(GL_QUADS);
-            glVertex2f(0,     0);
-            glVertex2f(0,     Height);
-            glVertex2f(Width, Height);
-            glVertex2f(Width, 0);
-        glEnd();
+        // glBegin(GL_QUADS);
+        //     glVertex2f(0,     0);
+        //     glVertex2f(0,     Height);
+        //     glVertex2f(Width, Height);
+        //     glVertex2f(Width, 0);
+        // glEnd();
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+	GLfloat ver_coords[6*2];
+	int j = 0;
+        ver_coords[j++] = 0;     ver_coords[j++] = 0;
+        ver_coords[j++] = 0;     ver_coords[j++] = Height;
+	ver_coords[j++] = Width; ver_coords[j++] = Height;
+        ver_coords[j++] = 0;     ver_coords[j++] = 0;
+	ver_coords[j++] = Width; ver_coords[j++] = Height;
+	ver_coords[j++] = Width; ver_coords[j++] = 0;
+        glVertexPointer(2, GL_FLOAT, 0, ver_coords);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisableClientState(GL_VERTEX_ARRAY);
     }
 }
 

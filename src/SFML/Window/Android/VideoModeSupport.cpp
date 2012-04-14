@@ -22,24 +22,39 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_PLATFORM_HPP
-#define SFML_PLATFORM_HPP
-
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Config.hpp>
+#include <SFML/Window/Android/VideoModeSupport.hpp>
 
 
-#if defined(SFML_SYSTEM_WINDOWS)
+namespace sf
+{
+namespace priv
+{
+////////////////////////////////////////////////////////////
+/// Get supported video modes
+////////////////////////////////////////////////////////////
+void VideoModeSupport::GetSupportedVideoModes(std::vector<VideoMode>& Modes)
+{
+    // Get all the supported fullscreen modes and put them in Modes array
 
-    #include <SFML/System/Win32/Platform.hpp>
+    // Just care about width, height and bpp (ignore frequency and other attributes)
 
-#elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_MACOS) || defined(SFML_SYSTEM_FREEBSD) || defined(SFML_SYSTEM_ANDROID)
+    // You must remove duplicates
 
-    #include <SFML/System/Unix/Platform.hpp>
+    // Order doesn't matter (the array will be sorted later)
+}
 
-#endif
 
+////////////////////////////////////////////////////////////
+/// Get current desktop video mode
+////////////////////////////////////////////////////////////
+VideoMode VideoModeSupport::GetDesktopVideoMode()
+{
+    // Return the current desktop video mode
+}
 
-#endif // SFML_PLATFORM_HPP
+} // namespace priv
+
+} // namespace sf

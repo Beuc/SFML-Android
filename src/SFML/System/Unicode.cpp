@@ -175,36 +175,36 @@ Unicode::Text::Text(const std::string& Str)
     myUTF32String.reserve(Str.length() + 1);
     Unicode::ANSIToUTF32(Str.begin(), Str.end(), std::back_inserter(myUTF32String));
 }
-Unicode::Text::Text(const std::wstring& Str)
-{
-    // This function assumes that 2-byte large wchar_t are encoded in UTF-16 (Windows), and
-    // 4-byte large wchar_t are encoded using UTF-32 (Unix)
-    // Is that always true ? (some platforms may use JIS Japanese encoding)
-    // The macro __STDC_ISO_10646__ should help identifying UTF-32 compliant implementations
+// Unicode::Text::Text(const std::wstring& Str)
+// {
+//     // This function assumes that 2-byte large wchar_t are encoded in UTF-16 (Windows), and
+//     // 4-byte large wchar_t are encoded using UTF-32 (Unix)
+//     // Is that always true ? (some platforms may use JIS Japanese encoding)
+//     // The macro __STDC_ISO_10646__ should help identifying UTF-32 compliant implementations
 
-    myUTF32String.reserve(Str.length() + 1);
+//     myUTF32String.reserve(Str.length() + 1);
 
-    // Select the proper function according to the (supposed) wchar_t system encoding
-    switch (sizeof(wchar_t))
-    {
-        // wchar_t uses UTF-16 -- need a conversion
-        case 2 :
-        {
-            Unicode::UTF16ToUTF32(Str.begin(), Str.end(), std::back_inserter(myUTF32String), 0);
-            break;
-        }
+//     // Select the proper function according to the (supposed) wchar_t system encoding
+//     switch (sizeof(wchar_t))
+//     {
+//         // wchar_t uses UTF-16 -- need a conversion
+//         case 2 :
+//         {
+//             Unicode::UTF16ToUTF32(Str.begin(), Str.end(), std::back_inserter(myUTF32String), 0);
+//             break;
+//         }
 
-        // wchar_t uses UTF-32 -- direct copy
-        case 4 :
-        {
-            std::copy(Str.begin(), Str.end(), std::back_inserter(myUTF32String));
-            break;
-        }
+//         // wchar_t uses UTF-32 -- direct copy
+//         case 4 :
+//         {
+//             std::copy(Str.begin(), Str.end(), std::back_inserter(myUTF32String));
+//             break;
+//         }
 
-        // This should never happen
-        default : break;
-    }
-}
+//         // This should never happen
+//         default : break;
+//     }
+// }
 Unicode::Text::Text(const Unicode::UTF8String& Str)
 {
     myUTF32String.reserve(Str.length() + 1);
@@ -231,38 +231,38 @@ Unicode::Text::operator std::string() const
     Unicode::UTF32ToANSI(myUTF32String.begin(), myUTF32String.end(), std::back_inserter(Output), 0, Unicode::GetDefaultLocale());
     return Output;
 }
-Unicode::Text::operator std::wstring() const
-{
-    // This function assumes that 2-byte large wchar_t are encoded in UTF-16 (Windows), and
-    // 4-byte large wchar_t are encoded using UTF-32 (Unix)
-    // Is that always true ? (some platforms may use JIS Japanese encoding)
-    // The macro __STDC_ISO_10646__ should help identifying UTF-32 compliant implementations
+// Unicode::Text::operator std::wstring() const
+// {
+//     // This function assumes that 2-byte large wchar_t are encoded in UTF-16 (Windows), and
+//     // 4-byte large wchar_t are encoded using UTF-32 (Unix)
+//     // Is that always true ? (some platforms may use JIS Japanese encoding)
+//     // The macro __STDC_ISO_10646__ should help identifying UTF-32 compliant implementations
 
-    std::wstring Output;
-    Output.reserve(myUTF32String.length() + 1);
+//     std::wstring Output;
+//     Output.reserve(myUTF32String.length() + 1);
 
-    // Select the proper function according to the (supposed) wchar_t system encoding
-    switch (sizeof(wchar_t))
-    {
-        // wchar_t uses UTF-16 -- need a conversion
-        case 2 :
-        {
-            UTF32ToUTF16(myUTF32String.begin(), myUTF32String.end(), std::back_inserter(Output), 0);
-            break;
-        }
+//     // Select the proper function according to the (supposed) wchar_t system encoding
+//     switch (sizeof(wchar_t))
+//     {
+//         // wchar_t uses UTF-16 -- need a conversion
+//         case 2 :
+//         {
+//             UTF32ToUTF16(myUTF32String.begin(), myUTF32String.end(), std::back_inserter(Output), 0);
+//             break;
+//         }
 
-        // wchar_t uses UTF-32 -- direct copy
-        case 4 :
-        {
-            std::copy(myUTF32String.begin(), myUTF32String.end(), std::back_inserter(Output));
-            break;
-        }
+//         // wchar_t uses UTF-32 -- direct copy
+//         case 4 :
+//         {
+//             std::copy(myUTF32String.begin(), myUTF32String.end(), std::back_inserter(Output));
+//             break;
+//         }
 
-        // This should never happen
-        default : break;
-    }
-    return Output;
-}
+//         // This should never happen
+//         default : break;
+//     }
+//     return Output;
+// }
 Unicode::Text::operator sf::Unicode::UTF8String() const
 {
     Unicode::UTF8String Output;

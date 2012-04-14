@@ -36,6 +36,11 @@
     #include <SFML/Window/Win32/WindowImplWin32.hpp>
     typedef sf::priv::WindowImplWin32 WindowImplType;
 
+#elif defined(SFML_SYSTEM_ANDROID)
+
+    #include <SFML/Window/Android/WindowImplAndroid.hpp>
+    typedef sf::priv::WindowImplAndroid WindowImplType;
+
 #elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD)
 
     #include <SFML/Window/Linux/WindowImplX11.hpp>

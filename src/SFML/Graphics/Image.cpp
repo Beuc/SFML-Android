@@ -563,7 +563,11 @@ unsigned int Image::GetValidTextureSize(unsigned int Size)
     // Make sure we have a valid context
     priv::GraphicsContext Ctx;
 
+#ifndef __ANDROID__
     if (glewIsSupported("GL_ARB_texture_non_power_of_two") != 0)
+#else
+    if (1)
+#endif
     {
         // If hardware supports NPOT textures, then just return the unmodified size
         return Size;
@@ -643,9 +647,9 @@ bool Image::CreateTexture()
         GLuint Texture = 0;
         GLCheck(glGenTextures(1, &Texture));
         GLCheck(glBindTexture(GL_TEXTURE_2D, Texture));
-        GLCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, myTextureWidth, myTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
-        GLCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP));
-        GLCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP));
+        GLCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTextureWidth, myTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+        GLCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+        GLCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
         GLCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myIsSmooth ? GL_LINEAR : GL_NEAREST));
         GLCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myIsSmooth ? GL_LINEAR : GL_NEAREST));
         myTexture = static_cast<unsigned int>(Texture);
@@ -705,8 +709,10 @@ void Image::EnsureArrayUpdate() const
             // Texture and array have the same size, we can use a direct copy
 
             // Copy pixels from texture to array
+#ifndef __ANDROID__
             GLCheck(glBindTexture(GL_TEXTURE_2D, myTexture));
             GLCheck(glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, &myPixels[0]));
+#endif
         }
         else
         {
@@ -715,7 +721,9 @@ void Image::EnsureArrayUpdate() const
             // All the pixels will first be copied to a temporary array
             std::vector<Color> AllPixels(myTextureWidth * myTextureHeight);
             GLCheck(glBindTexture(GL_TEXTURE_2D, myTexture));
+#ifndef __ANDROID__
             GLCheck(glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, &AllPixels[0]));
+#endif
 
             // The we copy the useful pixels from the temporary array to the final one
             const Color* Src = &AllPixels[0];

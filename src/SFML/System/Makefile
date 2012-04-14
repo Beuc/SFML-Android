@@ -17,7 +17,7 @@ libsfml-system-s.a: $(OBJ)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(OBJ)
 
 libsfml-system.so: $(OBJ)
-	$(CPP) $(LDFLAGS) -Wl,-soname,$(LIB).$(VERSION) -o $(LIBNAME) $(OBJ) -lpthread
+	$(CPP) $(LDFLAGS) -Wl,-soname,$(LIB).$(VERSION) -o $(LIBNAME) $(OBJ)
 
 $(OBJ): %.o: %.cpp
 	$(CPP) -o $@ -c $< $(CFLAGS)

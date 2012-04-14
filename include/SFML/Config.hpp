@@ -39,6 +39,11 @@
         #define NOMINMAX
     #endif
 
+#elif defined(__ANDROID__)
+
+    // Android
+    #define SFML_SYSTEM_ANDROID
+
 #elif defined(linux) || defined(__linux)
 
     // Linux

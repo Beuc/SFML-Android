@@ -1,8 +1,8 @@
-#ifndef __ANDROID__
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
 // Copyright (C) 2007-2009 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2012  Sylvain Beucler
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,175 +23,149 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_POSTFX_HPP
-#define SFML_POSTFX_HPP
+#ifndef SFML_WINDOWIMPLEGL_HPP
+#define SFML_WINDOWIMPLEGL_HPP
 
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <cstddef>
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Image.hpp>
-#include <istream>
-#include <map>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/WindowImpl.hpp>
 #include <string>
 
 
 namespace sf
 {
+namespace priv
+{
 ////////////////////////////////////////////////////////////
-/// PostFX is used to apply a post effect to a window
+/// WindowImplEGL is the EGL implementation of WindowImpl
 ////////////////////////////////////////////////////////////
-class SFML_API PostFX : public Drawable
+class WindowImplEGL : public WindowImpl
 {
 public :
-
-    ////////////////////////////////////////////////////////////
-    /// Default constructor
-    ///
-    ////////////////////////////////////////////////////////////
-    PostFX();
-
-    ////////////////////////////////////////////////////////////
-    /// Copy constructor
-    ///
-    /// \param Copy : Instance to copy
-    ///
-    ////////////////////////////////////////////////////////////
-    PostFX(const PostFX& Copy);
-
     ////////////////////////////////////////////////////////////
     /// Destructor
     ///
     ////////////////////////////////////////////////////////////
-    ~PostFX();
+    ~WindowImplEGL();
 
     ////////////////////////////////////////////////////////////
-    /// Load the effect from a file
+    /// Check if there's an active context on the current thread
     ///
-    /// \param Filename : Path of the effect file to load
-    ///
-    /// \return True on success
+    /// \return True if there's a context bound to the current thread
     ///
     ////////////////////////////////////////////////////////////
-    bool LoadFromFile(const std::string& Filename);
-
-    ////////////////////////////////////////////////////////////
-    /// Load the effect from a text in memory
-    ///
-    /// \param Effect : String containing the effect code
-    ///
-    /// \return True on success
-    ///
-    ////////////////////////////////////////////////////////////
-    bool LoadFromMemory(const std::string& Effect);
-
-    ////////////////////////////////////////////////////////////
-    /// Change a parameter of the effect (1 float)
-    ///
-    /// \param Name : Parameter name in the effect
-    /// \param X :    Value to assign
-    ///
-    ////////////////////////////////////////////////////////////
-    void SetParameter(const std::string& Name, float X);
-
-    ////////////////////////////////////////////////////////////
-    /// Change a parameter of the effect (2 floats)
-    ///
-    /// \param Name : Parameter name in the effect
-    /// \param X, Y : Values to assign
-    ///
-    ////////////////////////////////////////////////////////////
-    void SetParameter(const std::string& Name, float X, float Y);
-
-    ////////////////////////////////////////////////////////////
-    /// Change a parameter of the effect (3 floats)
-    ///
-    /// \param Name :    Parameter name in the effect
-    /// \param X, Y, Z : Values to assign
-    ///
-    ////////////////////////////////////////////////////////////
-    void SetParameter(const std::string& Name, float X, float Y, float Z);
-
-    ////////////////////////////////////////////////////////////
-    /// Change a parameter of the effect (4 floats)
-    ///
-    /// \param Name :       Parameter name in the effect
-    /// \param X, Y, Z, W : Values to assign
-    ///
-    ////////////////////////////////////////////////////////////
-    void SetParameter(const std::string& Name, float X, float Y, float Z, float W);
-
-    ////////////////////////////////////////////////////////////
-    /// Set a texture parameter
-    ///
-    /// \param Name :    Texture name in the effect
-    /// \param Texture : Image to set (pass NULL to use content of current framebuffer)
-    ///
-    ////////////////////////////////////////////////////////////
-    void SetTexture(const std::string& Name, Image* Texture);
-
-    ////////////////////////////////////////////////////////////
-    /// Assignment operator
-    ///
-    /// \param Other : Instance to assign
-    ///
-    /// \return Reference to the post-effect
-    ///
-    ////////////////////////////////////////////////////////////
-    PostFX& operator =(const PostFX& Other);
-
-    ////////////////////////////////////////////////////////////
-    /// Tell whether or not the system supports post-effects
-    ///
-    /// \return True if the system can use post-effects
-    ///
-    ////////////////////////////////////////////////////////////
-    static bool CanUsePostFX();
-
-protected :
-
-    ////////////////////////////////////////////////////////////
-    /// /see Drawable::Render
-    ///
-    ////////////////////////////////////////////////////////////
-    virtual void Render(RenderTarget& Target) const;
+    static bool IsContextActive();
 
 private :
+    ////////////////////////////////////////////////////////////
+    /// /see WindowImpl::Display
+    ///
+    ////////////////////////////////////////////////////////////
+    virtual void Display();
 
     ////////////////////////////////////////////////////////////
-    /// Preprocess a SFML effect file
-    /// to convert it to a valid GLSL fragment shader
-    ///
-    /// \param File : Stream containing the code to process
-    ///
-    /// \return Valid fragment shader source code
+    /// /see WindowImpl::SetActive
     ///
     ////////////////////////////////////////////////////////////
-    static std::string PreprocessEffect(std::istream& File);
+    virtual void SetActive(bool Active = true) const;
 
     ////////////////////////////////////////////////////////////
-    /// Create the program and attach the shaders
+    /// /see WindowImpl::UseVerticalSync
     ///
     ////////////////////////////////////////////////////////////
-    void CreateProgram();
+    virtual void UseVerticalSync(bool Enabled);
 
     ////////////////////////////////////////////////////////////
-    // Types
+    /// /see WindowImpl::ShowMouseCursor
+    ///
     ////////////////////////////////////////////////////////////
-    typedef std::map<std::string, const Image*> TextureTable;
+    virtual void ShowMouseCursor(bool Show);
+
+    ////////////////////////////////////////////////////////////
+    /// /see WindowImpl::SetCursorPosition
+    ///
+    ////////////////////////////////////////////////////////////
+    virtual void SetCursorPosition(unsigned int Left, unsigned int Top);
+
+    ////////////////////////////////////////////////////////////
+    /// /see WindowImpl::SetPosition
+    ///
+    ////////////////////////////////////////////////////////////
+    virtual void SetPosition(int Left, int Top);
+
+    ////////////////////////////////////////////////////////////
+    /// /see WindowImpl::SetSize
+    ///
+    ////////////////////////////////////////////////////////////
+    virtual void SetSize(unsigned int Width, unsigned int Height);
+
+    ////////////////////////////////////////////////////////////
+    /// /see WindowImpl::Show
+    ///
+    ////////////////////////////////////////////////////////////
+    virtual void Show(bool State);
+
+    ////////////////////////////////////////////////////////////
+    /// /see WindowImpl::EnableKeyRepeat
+    ///
+    ////////////////////////////////////////////////////////////
+    virtual void EnableKeyRepeat(bool Enabled);
+
+    ////////////////////////////////////////////////////////////
+    /// /see WindowImpl::SetIcon
+    ///
+    ////////////////////////////////////////////////////////////
+    virtual void SetIcon(unsigned int Width, unsigned int Height, const Uint8* Pixels);
 
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    unsigned int  myShaderProgram;  ///< OpenGL identifier for the program
-    TextureTable  myTextures;       ///< Texture variables in the effect
-    std::string   myFragmentShader; ///< Fragment shader source code
-    mutable Image myFrameBuffer;    ///< Texture containing the current frame buffer
+    EGLContext myGLContext;                    ///< OpenGL context attached to the window
+    EGLSurface mySurface;                      ///< OpenGL context attached to the window
+
+protected:  
+    ////////////////////////////////////////////////////////////
+    // Static member data
+    ////////////////////////////////////////////////////////////
+    static EGLDisplay     ourDisplay;          ///< Current opened display
+    static EGLConfig      ourConfig;           ///< Current config
+    static unsigned int   ourWindowsCount;     ///< Number of windows created
+
+    ////////////////////////////////////////////////////////////
+    /// Create EGL Surface from a native window handle
+    ////////////////////////////////////////////////////////////
+    void CreateEGLSurface(WindowHandle Handle);
+
+    ////////////////////////////////////////////////////////////
+    /// Open the display (if not already done)
+    ///
+    /// \param AddWindow : Tell whether or not we must increase the windows count
+    ///
+    /// \return True if the display is properly opened
+    ///
+    ////////////////////////////////////////////////////////////
+    static bool OpenDisplay(bool AddWindow = true);
+
+    ////////////////////////////////////////////////////////////
+    /// Close the display
+    ////////////////////////////////////////////////////////////
+    static void CloseDisplay();
+
+    ////////////////////////////////////////////////////////////
+    /// Define context config
+    ////////////////////////////////////////////////////////////
+    virtual void ChooseConfig();
+
+    ////////////////////////////////////////////////////////////
+    /// Create EGL Context
+    ////////////////////////////////////////////////////////////
+    virtual bool CreateContext();
 };
+
+} // namespace priv
 
 } // namespace sf
 
-
-#endif // SFML_POSTFX_HPP
-#endif
+#endif // SFML_WINDOWIMPLEGL_HPP

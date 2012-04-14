@@ -1,3 +1,4 @@
+#ifndef __ANDROID__
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -410,3 +411,4 @@ void String::RecomputeRect()
 }
 
 } // namespace sf
+#endif

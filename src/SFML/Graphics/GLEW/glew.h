@@ -1,3 +1,6 @@
+#ifdef SFML_SYSTEM_ANDROID
+#include <GLES/gl.h>
+#else
 /*
 ** The OpenGL Extension Wrangler Library
 ** Copyright (C) 2002-2006, Milan Ikits <milan ikits[]ieee org>
@@ -9791,3 +9794,4 @@ GLEWAPI const GLubyte* glewGetString (GLenum name);
 /* #undef GLEWAPI */
 
 #endif /* __glew_h__ */
+#endif

@@ -84,6 +84,7 @@ void RenderTarget::Draw(const Drawable& Object)
         if (Activate(true))
         {
             // Save the current render states and set the SFML ones
+#ifndef __ANDROID__
             if (myPreserveStates)
             {
                 GLCheck(glPushAttrib(GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT   | GL_ENABLE_BIT  |
@@ -92,6 +93,7 @@ void RenderTarget::Draw(const Drawable& Object)
                 GLCheck(glMatrixMode(GL_PROJECTION)); GLCheck(glPushMatrix());
                 SetRenderStates();
             }
+#endif
 
             // Set the window viewport and transform matrices
             GLCheck(glViewport(0, 0, GetWidth(), GetHeight()));
@@ -102,12 +104,14 @@ void RenderTarget::Draw(const Drawable& Object)
             Object.Draw(*this);
 
             // Restore render states
+#ifndef __ANDROID__
             if (myPreserveStates)
             {
                 GLCheck(glMatrixMode(GL_PROJECTION)); GLCheck(glPopMatrix());
                 GLCheck(glMatrixMode(GL_MODELVIEW));  GLCheck(glPopMatrix());
                 GLCheck(glPopAttrib());
             }
+#endif
 
             // Deactivate rendering on this target
             Activate(false);

@@ -1,3 +1,4 @@
+#ifndef __ANDROID__
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -504,3 +505,4 @@ void PostFX::CreateProgram()
 }
 
 } // namespace sf
+#endif

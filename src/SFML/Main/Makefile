@@ -1,24 +1,23 @@
-SRC     = $(wildcard *.cpp ./Android/*.cpp ./EGL/*.cpp)
-OBJ     = $(SRC:.cpp=.o)
-OBJGLEW = $(SRCGLEW:.c=.o)
+SRC = $(wildcard *.cpp ./android_native_app_glue/*.cpp)
+OBJ = $(SRC:.cpp=.o)
 
 ifeq ($(STATIC), yes)
-    LIB     = libsfml-window-s.a
+    LIB     = libsfml-main-s.a
     LIBNAME = $(LIBPATH)/$(LIB)
     INSTALL = 
 else
-    LIB     = libsfml-window.so
+    LIB     = libsfml-main.so
     LIBNAME = $(LIBPATH)/$(LIB).$(VERSION)
     INSTALL = && $(LN) $(LNFLAGS) $(LIB).$(VERSION) $(DESTLIBDIR)/$(LIB)
 endif
 
 all: $(LIB)
 
-libsfml-window-s.a: $(OBJ)
+libsfml-main-s.a: $(OBJ)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(OBJ)
 
-libsfml-window.so: $(OBJ)
-	$(CPP) $(LDFLAGS) -Wl,-soname,$(LIB).$(VERSION) -o $(LIBNAME) $(OBJ) $(OBJGLEW) -lEGL -lGLESv1_CM
+libsfml-main.so: $(OBJ)
+	$(CPP) $(LDFLAGS) -Wl,-soname,$(LIB).$(VERSION) -o $(LIBNAME) $(OBJ)
 
 $(OBJ): %.o: %.cpp
 	$(CPP) -o $@ -c $< $(CFLAGS)

@@ -31,7 +31,11 @@
 #include <SFML/Config.hpp>
 
 
-#if defined(SFML_SYSTEM_WINDOWS)
+#if defined(SFML_SYSTEM_ANDROID)
+
+    #include <SFML/Window/Android/VideoModeSupport.hpp>
+
+#elif defined(SFML_SYSTEM_WINDOWS)
 
     #include <SFML/Window/Win32/VideoModeSupport.hpp>
 

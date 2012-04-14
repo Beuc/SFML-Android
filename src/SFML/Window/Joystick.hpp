@@ -62,7 +62,11 @@ struct JoystickState
 } // namespace sf
 
 
-#if defined(SFML_SYSTEM_WINDOWS)
+#if defined(SFML_SYSTEM_ANDROID)
+
+    #include <SFML/Window/Android/Joystick.hpp>
+
+#elif defined(SFML_SYSTEM_WINDOWS)
 
     #include <SFML/Window/Win32/Joystick.hpp>
 

@@ -1,3 +1,4 @@
+#ifndef __ANDROID__
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -423,3 +424,4 @@ OutlineCol(OutlineC)
 }
 
 } // namespace sf
+#endif

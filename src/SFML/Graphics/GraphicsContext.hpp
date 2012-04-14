@@ -154,12 +154,12 @@ inline void GLCheckError(const std::string& File, unsigned int Line)
                 break;
             }
 
-            case GL_INVALID_FRAMEBUFFER_OPERATION_EXT :
-            {
-                Error = "GL_INVALID_FRAMEBUFFER_OPERATION_EXT";
-                Desc  = "the object bound to FRAMEBUFFER_BINDING_EXT is not \"framebuffer complete\"";
-                break;
-            }
+            // case GL_INVALID_FRAMEBUFFER_OPERATION_EXT :
+            // {
+            //     Error = "GL_INVALID_FRAMEBUFFER_OPERATION_EXT";
+            //     Desc  = "the object bound to FRAMEBUFFER_BINDING_EXT is not \"framebuffer complete\"";
+            //     break;
+            // }
         }
 
         // Log the error
