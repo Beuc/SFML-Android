@@ -18,7 +18,7 @@ libsfml-window-s.a: $(OBJ)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(OBJ)
 
 libsfml-window.so: $(OBJ)
-	$(CPP) $(LDFLAGS) -Wl,-soname,$(LIB).$(VERSION) -o $(LIBNAME) $(OBJ) $(OBJGLEW) -lEGL -lGLESv1_CM
+	$(CPP) $(LDFLAGS) -Wl,-soname,$(LIB).$(VERSION) -o $(LIBNAME) $(OBJ) $(OBJGLEW) -lEGL
 
 $(OBJ): %.o: %.cpp
 	$(CPP) -o $@ -c $< $(CFLAGS)

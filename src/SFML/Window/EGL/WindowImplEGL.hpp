@@ -32,6 +32,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/WindowImpl.hpp>
 #include <string>
+#include <EGL/egl.h>
 
 
 namespace sf

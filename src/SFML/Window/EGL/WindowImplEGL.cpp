@@ -28,14 +28,13 @@
 ////////////////////////////////////////////////////////////
 #include <iostream>
 #include <SFML/Window/EGL/WindowImplEGL.hpp>
-#include <EGL/egl.h>
 
 namespace sf
 {
 namespace priv
 {
 
-EGLDisplay     WindowImplEGL::ourDisplay          = NULL;
+EGLDisplay     WindowImplEGL::ourDisplay          = EGL_NO_DISPLAY;
 EGLConfig      WindowImplEGL::ourConfig           = NULL;
 unsigned int   WindowImplEGL::ourWindowsCount     = 0;
   
@@ -50,7 +49,7 @@ unsigned int   WindowImplEGL::ourWindowsCount     = 0;
 bool WindowImplEGL::OpenDisplay(bool AddWindow)
 {
     // If no display has been opened yet, open it
-    if (ourDisplay == NULL)
+    if (ourDisplay == EGL_NO_DISPLAY)
     {
 	/* Using EGL_DEFAULT_DISPLAY, or a specific native display */
 	EGLNativeDisplayType nativeDisplay = EGL_DEFAULT_DISPLAY;
@@ -66,7 +65,7 @@ bool WindowImplEGL::OpenDisplay(bool AddWindow)
         }
         else
         {
-            std::cerr << "Failed to open a connection with the X server" << std::endl;
+            std::cerr << "Failed to open an EGL connection" << std::endl;
         }
     }
 
@@ -74,7 +73,7 @@ bool WindowImplEGL::OpenDisplay(bool AddWindow)
     if (AddWindow)
         ourWindowsCount++;
 
-    return ourDisplay != NULL;
+    return ourDisplay != EGL_NO_DISPLAY;
 }
 
 ////////////////////////////////////////////////////////////

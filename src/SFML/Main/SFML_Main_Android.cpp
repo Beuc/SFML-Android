@@ -64,6 +64,14 @@
 extern int32_t handle_input(struct android_app* app, AInputEvent* event);
 extern void handle_cmd(struct android_app* app, int32_t cmd);
 
+// int32_t handle_input(struct android_app* app, AInputEvent* event) {
+//   LOGI("handle_input");
+// }
+// void handle_cmd(struct android_app* app, int32_t cmd) {
+//   LOGI("handle_cmd");
+// }
+
+
 extern int main(int argc, char* argv[]);
 
 /** NativeActivity Callbacks **/
