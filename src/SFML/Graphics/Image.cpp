@@ -709,7 +709,9 @@ void Image::EnsureArrayUpdate() const
             // Texture and array have the same size, we can use a direct copy
 
             // Copy pixels from texture to array
-#ifndef __ANDROID__
+#ifdef __ANDROID__
+            std::cerr << "EnsureArrayUpdate: Android: glGetTexImage not implemented" << std::endl;
+#else
             GLCheck(glBindTexture(GL_TEXTURE_2D, myTexture));
             GLCheck(glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, &myPixels[0]));
 #endif
@@ -720,8 +722,10 @@ void Image::EnsureArrayUpdate() const
 
             // All the pixels will first be copied to a temporary array
             std::vector<Color> AllPixels(myTextureWidth * myTextureHeight);
+#ifdef __ANDROID__
+            std::cerr << "EnsureArrayUpdate: Android: glGetTexImage not implemented" << std::endl;
+#else
             GLCheck(glBindTexture(GL_TEXTURE_2D, myTexture));
-#ifndef __ANDROID__
             GLCheck(glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, &AllPixels[0]));
 #endif
 
