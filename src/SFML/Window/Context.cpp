@@ -31,12 +31,8 @@
 
 namespace
 {
-  // Don't try to initialize this at library loading time, it's WAY
-  // too early to initialize an EGL context at that time.
-#ifndef __ANDROID__
     // Make sure the dummy context is created at global startup
     sf::Context& Dummy = sf::Context::GetGlobal();
-#endif
 }
 
 

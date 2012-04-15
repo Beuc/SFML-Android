@@ -235,6 +235,43 @@ myHandle(NULL)
 
     // Create an OpenGL context in this window and DO NOT make it active
 
+
+    // (Called from Context::Dummy/GetGlobal() at library loading time.)
+
+    // For Android, don't try to initialize this , it's WAY too early
+    // to initialize an EGL context at that time.
+    std::cerr << "WindowImplAndroid::WindowImplAndroid(void): STUB" << std::endl;
+}
+
+
+////////////////////////////////////////////////////////////
+/// Create the window implementation from an existing control
+////////////////////////////////////////////////////////////
+WindowImplAndroid::WindowImplAndroid(WindowHandle Handle, WindowSettings& Params)
+{
+    // Make sure we'll be able to catch all the events of the given window
+
+    // Initialize myWidth and myHeight members from base class with the window size
+
+    // Create an OpenGL context in this window and make it active
+
+    std::cerr << "WindowImplAndroid::WindowImplAndroid(WindowHandle,WindowSettings&): STUB" << std::endl;
+}
+
+
+////////////////////////////////////////////////////////////
+/// Create the window implementation
+////////////////////////////////////////////////////////////
+WindowImplAndroid::WindowImplAndroid(VideoMode Mode, const std::string& Title, unsigned long WindowStyle, WindowSettings& Params)
+{
+    // Create a new window with given size, title and style
+
+    // Initialize myWidth and myHeight members from base class with the window size
+
+    // Create an OpenGL context in this window and make it active
+
+    std::cerr << "WindowImplAndroid::WindowImplAndroid(VideoMode,Title,...)" << std::endl;
+
     /* TODO: only one full-screen window possible? */
     if (unique_window != NULL)
 	return;
@@ -256,46 +293,16 @@ myHandle(NULL)
 	ProcessEvents();
     }
 
-  /* EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is
-   * guaranteed to be accepted by ANativeWindow_setBuffersGeometry().
-   * As soon as we picked a EGLConfig, we can safely reconfigure the
-   * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
-  EGLint vid;
-  eglGetConfigAttrib(ourDisplay, ourConfig,
-		     EGL_NATIVE_VISUAL_ID, &vid);
-  ANativeWindow_setBuffersGeometry(unique_window, 0, 0, vid);
-
-  CreateEGLSurface(unique_window);
-}
-
-
-////////////////////////////////////////////////////////////
-/// Create the window implementation from an existing control
-////////////////////////////////////////////////////////////
-WindowImplAndroid::WindowImplAndroid(WindowHandle Handle, WindowSettings& Params)
-{
-    // Make sure we'll be able to catch all the events of the given window
-
-    // Initialize myWidth and myHeight members from base class with the window size
-
-    // Create an OpenGL context in this window and make it active
-
-    std::cerr << "WindowImplAndroid::WindowImplAndroid: STUB" << std::endl;
-}
-
-
-////////////////////////////////////////////////////////////
-/// Create the window implementation
-////////////////////////////////////////////////////////////
-WindowImplAndroid::WindowImplAndroid(VideoMode Mode, const std::string& Title, unsigned long WindowStyle, WindowSettings& Params)
-{
-    // Create a new window with given size, title and style
-
-    // Initialize myWidth and myHeight members from base class with the window size
-
-    // Create an OpenGL context in this window and make it active
-
-    std::cerr << "WindowImplAndroid::WindowImplAndroid: STUB" << std::endl;
+    /* EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is
+     * guaranteed to be accepted by ANativeWindow_setBuffersGeometry().
+     * As soon as we picked a EGLConfig, we can safely reconfigure the
+     * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
+    EGLint vid;
+    eglGetConfigAttrib(ourDisplay, ourConfig,
+		       EGL_NATIVE_VISUAL_ID, &vid);
+    ANativeWindow_setBuffersGeometry(unique_window, 0, 0, vid);
+    
+    CreateEGLSurface(unique_window);
 }
 
 

@@ -42,7 +42,7 @@
     #include <GL/gl.h>
     #include <GL/glu.h>
 
-#elif defined(ANDROID)
+#elif defined(SFML_SYSTEM_ANDROID)
 
     #include <GLES/gl.h>
 

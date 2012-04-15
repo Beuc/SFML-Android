@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////
 #include <iostream>
 #include <SFML/Window/EGL/WindowImplEGL.hpp>
+#include <SFML/Window.hpp>  // for OpenGL headers
 
 namespace sf
 {
@@ -48,20 +49,30 @@ unsigned int   WindowImplEGL::ourWindowsCount     = 0;
 ////////////////////////////////////////////////////////////
 bool WindowImplEGL::OpenDisplay(bool AddWindow)
 {
+    std::cerr << "WindowImplEGL::OpenDisplay" << std::endl;
+
+
     // If no display has been opened yet, open it
     if (ourDisplay == EGL_NO_DISPLAY)
     {
 	/* Using EGL_DEFAULT_DISPLAY, or a specific native display */
 	EGLNativeDisplayType nativeDisplay = EGL_DEFAULT_DISPLAY;
 	ourDisplay = eglGetDisplay(nativeDisplay);
-	
+
         if (ourDisplay != EGL_NO_DISPLAY)
         {
+	    if (!eglInitialize(ourDisplay, NULL, NULL))
+	    {
 # ifdef GL_VERSION_1_1  /* or later */
-	    eglBindAPI(EGL_OPENGL_API);
+		eglBindAPI(EGL_OPENGL_API);
 # else
-	    eglBindAPI(EGL_OPENGL_ES_API);
+		eglBindAPI(EGL_OPENGL_ES_API);
 # endif
+	    }
+	    else
+	    {
+		std::cerr << "eglInitialize: error " << std::hex << eglGetError() << std::endl;
+	    }
         }
         else
         {
@@ -101,13 +112,16 @@ void WindowImplEGL::CloseDisplay()
 ////////////////////////////////////////////////////////////
 void WindowImplEGL::CreateEGLSurface(WindowHandle Handle)
 {
+    std::cerr << "WindowImplEGL::CreateEGLSurface" << std::endl;
+
     // - Make sure we'll be able to catch all the events of the given window
     // - Initialize myWidth and myHeight members from base class with the window size
     // - Create an OpenGL context in this window and make it active
     mySurface = eglCreateWindowSurface(ourDisplay, ourConfig, Handle, NULL);
     if (mySurface == EGL_NO_SURFACE)
 	std::cerr << "Cannot create EGL window surface, err=" << std::hex << eglGetError() << std::endl;
-    SetActive(true);
+    // Done by Window::Initialize():
+    // SetActive(true);
     
     // TODO: test if we get the right size
     EGLint w, h;
@@ -163,15 +177,18 @@ void WindowImplEGL::Display()
 ////////////////////////////////////////////////////////////
 void WindowImplEGL::SetActive(bool Active) const
 {
-    // Bind / unbind OpenGL context (should be a call to xxxMakeCurrent)
-    if (Active)
+    if (ourDisplay != EGL_NO_DISPLAY)
     {
-	if (!eglMakeCurrent(ourDisplay, mySurface, mySurface, myGLContext))
-	    std::cerr << "eglMakeCurrent: error " << std::hex << eglGetError() << std::endl;
-    }
-    else
-    {
-	eglMakeCurrent(ourDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+	// Bind / unbind OpenGL context (should be a call to xxxMakeCurrent)
+	if (Active)
+        {
+	    if (!eglMakeCurrent(ourDisplay, mySurface, mySurface, myGLContext))
+		std::cerr << "eglMakeCurrent: error " << std::hex << eglGetError() << std::endl;
+	}
+	else
+	{
+	    eglMakeCurrent(ourDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+	}
     }
 }
 
@@ -267,7 +284,7 @@ void WindowImplEGL::ChooseConfig()
 	EGL_RED_SIZE, 1,
 	EGL_ALPHA_SIZE, 1,
 	EGL_DEPTH_SIZE, 1,
-	EGL_STENCIL_SIZE, 1,
+	EGL_STENCIL_SIZE, 0,
 	EGL_SAMPLE_BUFFERS, 0,
 	EGL_SAMPLES, 0,
 	EGL_NONE
