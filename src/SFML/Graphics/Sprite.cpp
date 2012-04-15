@@ -208,8 +208,6 @@ void Sprite::Render(RenderTarget&) const
         //     glTexCoord2f(Rect.Right, Rect.Top);    glVertex2f(Width, 0) ;
         // glEnd();
 
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);
 	GLfloat tex_coords[6*2];
 	GLfloat ver_coords[6*2];
 	int i = 0, j = 0;
@@ -219,6 +217,11 @@ void Sprite::Render(RenderTarget&) const
         tex_coords[i++] = Rect.Left;  tex_coords[i++] = Rect.Top;     ver_coords[j++] = 0;     ver_coords[j++] = 0;
 	tex_coords[i++] = Rect.Right; tex_coords[i++] = Rect.Bottom;  ver_coords[j++] = Width; ver_coords[j++] = Height;
 	tex_coords[i++] = Rect.Right; tex_coords[i++] = Rect.Top;     ver_coords[j++] = Width; ver_coords[j++] = 0;
+
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        // This makes Android outputs GL_INVALID_ENUM in Drawable.cpp:398 (for glMatrixMode(GL_MODELVIEW) ???)
+        // glEnableClientState(GL_TEXTURE0);
         glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
         glVertexPointer(2, GL_FLOAT, 0, ver_coords);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -238,7 +241,6 @@ void Sprite::Render(RenderTarget&) const
         //     glVertex2f(Width, 0);
         // glEnd();
 
-        glEnableClientState(GL_VERTEX_ARRAY);
 	GLfloat ver_coords[6*2];
 	int j = 0;
         ver_coords[j++] = 0;     ver_coords[j++] = 0;
@@ -247,6 +249,7 @@ void Sprite::Render(RenderTarget&) const
         ver_coords[j++] = 0;     ver_coords[j++] = 0;
 	ver_coords[j++] = Width; ver_coords[j++] = Height;
 	ver_coords[j++] = Width; ver_coords[j++] = 0;
+        glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(2, GL_FLOAT, 0, ver_coords);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
         glDisableClientState(GL_VERTEX_ARRAY);

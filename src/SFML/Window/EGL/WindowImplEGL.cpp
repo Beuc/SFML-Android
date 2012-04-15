@@ -112,8 +112,6 @@ void WindowImplEGL::CloseDisplay()
 ////////////////////////////////////////////////////////////
 void WindowImplEGL::CreateEGLSurface(WindowHandle Handle)
 {
-    std::cerr << "WindowImplEGL::CreateEGLSurface" << std::endl;
-
     // - Make sure we'll be able to catch all the events of the given window
     // - Initialize myWidth and myHeight members from base class with the window size
     // - Create an OpenGL context in this window and make it active
@@ -123,7 +121,7 @@ void WindowImplEGL::CreateEGLSurface(WindowHandle Handle)
     // Done by Window::Initialize():
     // SetActive(true);
     
-    // TODO: test if we get the right size
+    // Not necessarily the right size yet, resize events to come
     EGLint w, h;
     eglQuerySurface(ourDisplay, mySurface, EGL_WIDTH, &w);
     eglQuerySurface(ourDisplay, mySurface, EGL_HEIGHT, &h);
