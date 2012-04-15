@@ -1,0 +1,20 @@
+# Build and install FreeType in  /usr/src/ndk-standalone-9:
+# http://en.wikibooks.org/wiki/OpenGL_Programming/Installation/Android#FreeType
+
+cd SFML/src/SFML/
+make -j4 STATIC=yes DEBUGBUILD=yes CC=arm-linux-androideabi-gcc CPP=arm-linux-androideabi-g++ AR=arm-linux-androideabi-ar
+make install STATIC=yes DESTDIR=$(pwd)/destdir/
+
+-----
+-----
+
+Create 5 NDK modules like this:
+
+LOCAL_PATH:= $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := sfml-gles1-graphics
+LOCAL_SRC_FILES := lib/libsfml-graphics-s.a
+
+include $(PREBUILT_STATIC_LIBRARY)
