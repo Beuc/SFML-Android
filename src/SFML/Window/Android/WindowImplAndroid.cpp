@@ -326,6 +326,7 @@ WindowImplAndroid::~WindowImplAndroid()
 bool WindowImplAndroid::IsContextActive()
 {
     // Should return whether xxxGetCurrentContext() is NULL or not;
+    return eglGetCurrentContext() != EGL_NO_CONTEXT;
 }
 
 
