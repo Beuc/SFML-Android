@@ -143,10 +143,9 @@ private :
     ////////////////////////////////////////////////////////////
     virtual void SetIcon(unsigned int Width, unsigned int Height, const Uint8* Pixels);
 
-    ////////////////////////////////////////////////////////////
-    // Member data
-    ////////////////////////////////////////////////////////////
+public:
     WindowHandle myHandle;                         ///< ANativeWindow handle
+    void Terminate();
 };
 
 } // namespace priv

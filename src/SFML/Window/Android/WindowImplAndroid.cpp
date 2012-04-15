@@ -29,7 +29,7 @@
 #include <iostream>
 #include <SFML/Window/Android/WindowImplAndroid.hpp>
 #include <SFML/Window/WindowStyle.hpp>
-//#include <EGL/egl.h>
+#include <SFML/Window/Event.hpp>
 #include <GLES/gl.h>
 #include "SFML/Main/android_native_app_glue/android_native_app_glue.h"
 #include <android/log.h>
@@ -45,7 +45,7 @@ extern "C" void app_dummy();
 #define EVENT_NOT_HANDLED 0
 
 /// Only one window in Android for now
-static sf::WindowHandle unique_window = NULL;
+static sf::priv::WindowImplAndroid* unique_window = NULL;
 
 /**
  * Process the next input event.
@@ -181,14 +181,18 @@ void handle_cmd(struct android_app* app, int32_t cmd) {
   case APP_CMD_INIT_WINDOW:
     /* The window is being shown, get it ready. */
     LOGI("handle_cmd: APP_CMD_INIT_WINDOW");
-    unique_window = app->window;
+    if (unique_window == NULL)
+      LOGI("handle_cmd: internal error: unique_window is NULL");
+    else
+      unique_window->myHandle = app->window;
     /* glPlatformOpenWindow was waiting for Handle to be defined and
        will now return from fgPlatformProcessSingleEvent() */
     break;
   case APP_CMD_TERM_WINDOW:
     /* The window is being hidden or closed, clean it up. */
     LOGI("handle_cmd: APP_CMD_TERM_WINDOW");
-    // fgDestroyWindow(fgDisplay.pDisplay.single_window);
+    if (unique_window != NULL)
+      unique_window->Terminate();
     break;
   case APP_CMD_DESTROY:
     /* Not reached because GLUT exit()s when last window is closed */
@@ -248,6 +252,8 @@ myHandle(NULL)
 /// Create the window implementation from an existing control
 ////////////////////////////////////////////////////////////
 WindowImplAndroid::WindowImplAndroid(WindowHandle Handle, WindowSettings& Params)
+:
+myHandle(NULL)
 {
     // Make sure we'll be able to catch all the events of the given window
 
@@ -263,6 +269,8 @@ WindowImplAndroid::WindowImplAndroid(WindowHandle Handle, WindowSettings& Params
 /// Create the window implementation
 ////////////////////////////////////////////////////////////
 WindowImplAndroid::WindowImplAndroid(VideoMode Mode, const std::string& Title, unsigned long WindowStyle, WindowSettings& Params)
+:
+myHandle(NULL)
 {
     // Create a new window with given size, title and style
 
@@ -288,7 +296,8 @@ WindowImplAndroid::WindowImplAndroid(VideoMode Mode, const std::string& Title, u
     /* We can't return from this function before the OpenGL context is
        properly made current with a valid surface. So we wait for the
        surface. */
-    while (unique_window == NULL) {
+    unique_window = this;
+    while (unique_window->myHandle == NULL) {
 	/* APP_CMD_INIT_WINDOW will do the job */
 	ProcessEvents();
     }
@@ -300,9 +309,9 @@ WindowImplAndroid::WindowImplAndroid(VideoMode Mode, const std::string& Title, u
     EGLint vid;
     eglGetConfigAttrib(ourDisplay, ourConfig,
 		       EGL_NATIVE_VISUAL_ID, &vid);
-    ANativeWindow_setBuffersGeometry(unique_window, 0, 0, vid);
+    ANativeWindow_setBuffersGeometry(unique_window->myHandle, 0, 0, vid);
     
-    CreateEGLSurface(unique_window);
+    CreateEGLSurface(unique_window->myHandle);
 }
 
 
@@ -457,6 +466,15 @@ void WindowImplAndroid::SetIcon(unsigned int Width, unsigned int Height, const U
     // provided array of 32 bits RGBA pixels
 }
 
+////////////////////////////////////////////////////////////
+/// Allow static Android event handler to send a
+/// termination signal
+////////////////////////////////////////////////////////////
+void WindowImplAndroid::Terminate() {
+    sf::Event Evt;
+    Evt.Type = sf::Event::Closed;
+    SendEvent(Evt);
+}
 
 /*===========================================================
             STRATEGY FOR OPENGL CONTEXT CREATION
