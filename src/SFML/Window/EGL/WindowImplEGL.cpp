@@ -61,7 +61,7 @@ bool WindowImplEGL::OpenDisplay(bool AddWindow)
 
         if (ourDisplay != EGL_NO_DISPLAY)
         {
-	    if (eglInitialize(ourDisplay, NULL, NULL) != EGL_SUCCESS)
+	    if (eglInitialize(ourDisplay, NULL, NULL) == EGL_TRUE)
 	    {
 #ifdef GL_VERSION_1_1  /* or later */
 		eglBindAPI(EGL_OPENGL_API);
