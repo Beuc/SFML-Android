@@ -173,51 +173,8 @@ int32_t handle_input(struct android_app* app, AInputEvent* event) {
  * Process the next main command.
  */
 void handle_cmd(struct android_app* app, int32_t cmd) {
-  switch (cmd) {
-  case APP_CMD_SAVE_STATE:
-    /* The system has asked us to save our current state.  Do so. */
-    LOGI("handle_cmd: APP_CMD_SAVE_STATE");
-    break;
-  case APP_CMD_INIT_WINDOW:
-    /* The window is being shown, get it ready. */
-    LOGI("handle_cmd: APP_CMD_INIT_WINDOW");
-    if (unique_window == NULL)
-      LOGI("handle_cmd: internal error: unique_window is NULL");
-    else
-      unique_window->myHandle = app->window;
-    /* glPlatformOpenWindow was waiting for Handle to be defined and
-       will now return from fgPlatformProcessSingleEvent() */
-    break;
-  case APP_CMD_TERM_WINDOW:
-    /* The window is being hidden or closed, clean it up. */
-    LOGI("handle_cmd: APP_CMD_TERM_WINDOW");
-    if (unique_window != NULL)
-      unique_window->Terminate();
-    break;
-  case APP_CMD_DESTROY:
-    /* Not reached because GLUT exit()s when last window is closed */
-    LOGI("handle_cmd: APP_CMD_DESTROY");
-    break;
-  case APP_CMD_GAINED_FOCUS:
-    LOGI("handle_cmd: APP_CMD_GAINED_FOCUS");
-    break;
-  case APP_CMD_LOST_FOCUS:
-    LOGI("handle_cmd: APP_CMD_LOST_FOCUS");
-    break;
-  case APP_CMD_CONFIG_CHANGED:
-    /* Handle rotation / orientation change */
-    LOGI("handle_cmd: APP_CMD_CONFIG_CHANGED");
-    break;
-  case APP_CMD_WINDOW_RESIZED:
-    LOGI("handle_cmd: APP_CMD_WINDOW_RESIZED");
-    // if (fgDisplay.pDisplay.single_window->Window.pContext.egl.Surface != EGL_NO_SURFACE)
-    //   /* Make ProcessSingleEvent detect the new size, only available
-    // 	 after the next SwapBuffer */
-    //   // glutPostRedisplay();
-    break;
-  default:
-    LOGI("handle_cmd: unhandled cmd=%d", cmd);
-  }
+  if (unique_window != NULL)
+    unique_window->ProcessAndroidEvent(app, cmd);
 }
 
 namespace sf
@@ -470,10 +427,50 @@ void WindowImplAndroid::SetIcon(unsigned int Width, unsigned int Height, const U
 /// Allow static Android event handler to send a
 /// termination signal
 ////////////////////////////////////////////////////////////
-void WindowImplAndroid::Terminate() {
+void WindowImplAndroid::ProcessAndroidEvent(struct android_app* app, int32_t cmd) {
+  switch (cmd) {
+  case APP_CMD_SAVE_STATE:
+    /* The system has asked us to save our current state.  Do so. */
+    LOGI("handle_cmd: APP_CMD_SAVE_STATE");
+    break;
+  case APP_CMD_INIT_WINDOW:
+    /* The window is being shown, get it ready. */
+    LOGI("handle_cmd: APP_CMD_INIT_WINDOW");
+    myHandle = app->window;
+    /* glPlatformOpenWindow was waiting for Handle to be defined and
+       will now return from fgPlatformProcessSingleEvent() */
+    break;
+  case APP_CMD_TERM_WINDOW:
+    /* The window is being hidden or closed, clean it up. */
+    LOGI("handle_cmd: APP_CMD_TERM_WINDOW");
     sf::Event Evt;
     Evt.Type = sf::Event::Closed;
     SendEvent(Evt);
+    break;
+  case APP_CMD_DESTROY:
+    /* Not reached because GLUT exit()s when last window is closed */
+    LOGI("handle_cmd: APP_CMD_DESTROY");
+    break;
+  case APP_CMD_GAINED_FOCUS:
+    LOGI("handle_cmd: APP_CMD_GAINED_FOCUS");
+    break;
+  case APP_CMD_LOST_FOCUS:
+    LOGI("handle_cmd: APP_CMD_LOST_FOCUS");
+    break;
+  case APP_CMD_CONFIG_CHANGED:
+    /* Handle rotation / orientation change */
+    LOGI("handle_cmd: APP_CMD_CONFIG_CHANGED");
+    break;
+  case APP_CMD_WINDOW_RESIZED:
+    LOGI("handle_cmd: APP_CMD_WINDOW_RESIZED");
+    // if (fgDisplay.pDisplay.single_window->Window.pContext.egl.Surface != EGL_NO_SURFACE)
+    //   /* Make ProcessSingleEvent detect the new size, only available
+    // 	 after the next SwapBuffer */
+    //   // glutPostRedisplay();
+    break;
+  default:
+    LOGI("handle_cmd: unhandled cmd=%d", cmd);
+  }
 }
 
 /*===========================================================

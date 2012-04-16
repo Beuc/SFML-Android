@@ -33,6 +33,7 @@
 #include <SFML/Window/WindowImpl.hpp>
 #include <SFML/Window/EGL/WindowImplEGL.hpp>
 #include <string>
+#include "SFML/Main/android_native_app_glue/android_native_app_glue.h"
 
 
 namespace sf
@@ -145,7 +146,7 @@ private :
 
 public:
     WindowHandle myHandle;                         ///< ANativeWindow handle
-    void Terminate();
+    void ProcessAndroidEvent(struct android_app* app, int32_t cmd);
 };
 
 } // namespace priv
