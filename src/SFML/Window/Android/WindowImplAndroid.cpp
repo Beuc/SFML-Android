@@ -241,6 +241,9 @@ myHandle(NULL)
     if (unique_window != NULL)
 	return;
 
+    // myLastWidth = 0;
+    // myLastHeight = 0;
+
     OpenDisplay();
 
     if (!CreateContext())
@@ -305,9 +308,6 @@ void WindowImplAndroid::ProcessEvents()
   
   // Generate a sf::Event and call SendEvent(Evt) for each event
 
-  static int32_t last_width = -1;
-  static int32_t last_height = -1;
-
   /* When the screen is resized, the window handle still points to the
      old window until the next SwapBuffer, while it's crucial to set
      the size (onShape) correctly before the next onDisplay callback.
@@ -317,31 +317,26 @@ void WindowImplAndroid::ProcessEvents()
   /* Interestingly, on a Samsung Galaxy S/PowerVR SGX540 GPU/Android
      2.3, that next SwapBuffer is fake (but still necessary to get the
      new size). */
-  // SFG_Window* window = fgDisplay.pDisplay.single_window;
-  // if (window != NULL && window->Window.Handle != NULL) {
-  //   int32_t width = ANativeWindow_getWidth(window->Window.Handle);
-  //   int32_t height = ANativeWindow_getHeight(window->Window.Handle);
-  //   if (width != last_width || height != last_height) {
-  //     last_width = width;
-  //     last_height = height;
-  //     LOGI("width=%d, height=%d", width, height);
-  //     if( FETCH_WCB( *window, Reshape ) )
-  // 	INVOKE_WCB( *window, Reshape, ( width, height ) );
-  //     else
-  // 	glViewport( 0, 0, width, height );
-  //     glutPostRedisplay();
-  //   }
-  // }
+  if (myHandle != NULL) {
+    myWidth = ANativeWindow_getWidth(myHandle);
+    myHeight = ANativeWindow_getHeight(myHandle);
+    if (myWidth != myLastWidth || myHeight != myLastHeight) {
+      myLastWidth = myWidth;
+      myLastHeight = myHeight;
+      LOGI("width=%d, height=%d", myWidth, myHeight);
+      Event Evt;
+      Evt.Type        = Event::Resized;
+      Evt.Size.Width  = myWidth;
+      Evt.Size.Height = myHeight;
+      SendEvent(Evt);
+    }
+  }
+  LOGI("width=%d, height=%d", myWidth, myHeight);
 
   /* Read pending event. */
   int ident;
   int events;
   struct android_poll_source* source;
-  /* This is called "ProcessSingleEvent" but this means we'd only
-     process ~60 (screen Hz) mouse events per second, plus other ports
-     are processing all events already.  So let's process all pending
-     events. */
-  /* if ((ident=ALooper_pollOnce(0, NULL, &events, (void**)&source)) >= 0) { */
   while ((ident=ALooper_pollAll(0, NULL, &events, (void**)&source)) >= 0) {
     /* Process this event. */
     if (source != NULL) {

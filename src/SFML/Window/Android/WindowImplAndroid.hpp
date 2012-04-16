@@ -147,6 +147,8 @@ private :
 public:
     WindowHandle myHandle;                         ///< ANativeWindow handle
     void ProcessAndroidEvent(struct android_app* app, int32_t cmd);
+    unsigned int myLastWidth;
+    unsigned int myLastHeight;
 };
 
 } // namespace priv
