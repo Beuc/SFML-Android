@@ -241,8 +241,15 @@ myHandle(NULL)
     if (unique_window != NULL)
 	return;
 
-    // myLastWidth = 0;
-    // myLastHeight = 0;
+    myLastWidth = 0;
+    myLastHeight = 0;
+
+    // Since the initial Android window size is quite often 1x1, let's
+    // initialize our size early so that RenderTarget.myDefaultView
+    // gets a default sensible value.  Otherwise the user will get a
+    // misleading blank screen due to incorrect PROJECTION matrix.
+    myWidth = Mode.Width;
+    myHeight = Mode.Height;
 
     OpenDisplay();
 
@@ -321,9 +328,9 @@ void WindowImplAndroid::ProcessEvents()
     myWidth = ANativeWindow_getWidth(myHandle);
     myHeight = ANativeWindow_getHeight(myHandle);
     if (myWidth != myLastWidth || myHeight != myLastHeight) {
+      LOGI("width=%d, height=%d", myWidth, myHeight);
       myLastWidth = myWidth;
       myLastHeight = myHeight;
-      LOGI("width=%d, height=%d", myWidth, myHeight);
       Event Evt;
       Evt.Type        = Event::Resized;
       Evt.Size.Width  = myWidth;
@@ -331,7 +338,7 @@ void WindowImplAndroid::ProcessEvents()
       SendEvent(Evt);
     }
   }
-  LOGI("width=%d, height=%d", myWidth, myHeight);
+  // LOGI("width=%d, height=%d", myWidth, myHeight);
 
   /* Read pending event. */
   int ident;
@@ -458,10 +465,10 @@ void WindowImplAndroid::ProcessAndroidEvent(struct android_app* app, int32_t cmd
     break;
   case APP_CMD_WINDOW_RESIZED:
     LOGI("handle_cmd: APP_CMD_WINDOW_RESIZED");
-    // if (fgDisplay.pDisplay.single_window->Window.pContext.egl.Surface != EGL_NO_SURFACE)
-    //   /* Make ProcessSingleEvent detect the new size, only available
-    // 	 after the next SwapBuffer */
-    //   // glutPostRedisplay();
+    /* Make ProcessSingleEvent detect the new size, only available
+       after the next SwapBuffer */
+    // if (mySurface != EGL_NO_SURFACE)
+    //     Display();
     break;
   default:
     LOGI("handle_cmd: unhandled cmd=%d", cmd);

@@ -121,12 +121,13 @@ void WindowImplEGL::CreateEGLSurface(WindowHandle Handle)
     // Done by Window::Initialize():
     // SetActive(true);
     
-    // Not necessarily the right size yet, resize events to come
     EGLint w, h;
     eglQuerySurface(ourDisplay, mySurface, EGL_WIDTH, &w);
     eglQuerySurface(ourDisplay, mySurface, EGL_HEIGHT, &h);
-    myWidth = w;
-    myHeight = h;
+    // Not necessarily the right size yet, often 1x1 which causes
+    // misleadingly bad PROJECTION matrix; resize events to come..
+    // myWidth = w;
+    // myHeight = h;
 }
 
 

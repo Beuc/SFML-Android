@@ -84,16 +84,16 @@ void RenderTarget::Draw(const Drawable& Object)
         if (Activate(true))
         {
             // Save the current render states and set the SFML ones
-#ifndef __ANDROID__
             if (myPreserveStates)
             {
+#ifndef __ANDROID__
                 GLCheck(glPushAttrib(GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT   | GL_ENABLE_BIT  |
                                      GL_TEXTURE_BIT      | GL_TRANSFORM_BIT | GL_VIEWPORT_BIT));
+#endif
                 GLCheck(glMatrixMode(GL_MODELVIEW));  GLCheck(glPushMatrix());
                 GLCheck(glMatrixMode(GL_PROJECTION)); GLCheck(glPushMatrix());
                 SetRenderStates();
             }
-#endif
 
             // Set the window viewport and transform matrices
             GLCheck(glViewport(0, 0, GetWidth(), GetHeight()));
@@ -104,14 +104,14 @@ void RenderTarget::Draw(const Drawable& Object)
             Object.Draw(*this);
 
             // Restore render states
-#ifndef __ANDROID__
             if (myPreserveStates)
             {
                 GLCheck(glMatrixMode(GL_PROJECTION)); GLCheck(glPopMatrix());
                 GLCheck(glMatrixMode(GL_MODELVIEW));  GLCheck(glPopMatrix());
+#ifndef __ANDROID__
                 GLCheck(glPopAttrib());
-            }
 #endif
+            }
 
             // Deactivate rendering on this target
             Activate(false);
@@ -177,6 +177,7 @@ void RenderTarget::Initialize()
     SetRenderStates();
 
     // Setup the default view
+    std::cerr << "RenderTarget::Initialize: w=" << GetWidth() << " " << " h=" << GetHeight() << std::endl;
     myDefaultView.SetFromRect(FloatRect(0, 0, static_cast<float>(GetWidth()), static_cast<float>(GetHeight())));
     SetView(myDefaultView);
 }

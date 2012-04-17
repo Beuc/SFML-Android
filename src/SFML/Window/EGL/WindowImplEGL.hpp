@@ -59,13 +59,14 @@ public :
     ////////////////////////////////////////////////////////////
     static bool IsContextActive();
 
-private :
+protected :
     ////////////////////////////////////////////////////////////
     /// /see WindowImpl::Display
     ///
     ////////////////////////////////////////////////////////////
     virtual void Display();
 
+private :
     ////////////////////////////////////////////////////////////
     /// /see WindowImpl::SetActive
     ///
@@ -124,7 +125,6 @@ private :
     // Member data
     ////////////////////////////////////////////////////////////
     EGLContext myGLContext;                    ///< OpenGL context attached to the window
-    EGLSurface mySurface;                      ///< OpenGL context attached to the window
 
 protected:  
     ////////////////////////////////////////////////////////////
@@ -133,6 +133,9 @@ protected:
     static EGLDisplay     ourDisplay;          ///< Current opened display
     static EGLConfig      ourConfig;           ///< Current config
     static unsigned int   ourWindowsCount;     ///< Number of windows created
+
+    EGLSurface mySurface;                      ///< OpenGL context attached to the window
+
 
     ////////////////////////////////////////////////////////////
     /// Create EGL Surface from a native window handle
